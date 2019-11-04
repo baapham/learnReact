@@ -1,13 +1,38 @@
 class IndecisionApp extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleDeleteOptions = this.handleDeleteOptions.bind(this);
+        this.handlePick = this.handlePick.bind(this);
+        this.state = {
+            options: ["Thing one", "Thing two", "Thing Four"]
+        }
+    };
+    handleDeleteOptions() {
+        this.setState(() => {
+            return {
+                options: []
+            }
+        })
+    };
+    handlePick() {
+        const choice = Math.floor(Math.random() * this.state.options.length);
+        console.log(this.state.options[choice]);
+    };
     render() {
         const title = "Indecision";
         const subtitle = "Put your life in the hands of a computer!";
-        const options = ["Thing one", "Thing two", "Thing Four"];
+        // const options = ["Thing one", "Thing two", "Thing Four"];
         return (
             <div>
-                <Header title={title} subtitle={subtitle}/>
-                <Action />
-                <Options options={options}/>
+                <Header title={title} subtitle={subtitle} />
+                <Action 
+                    hasOptions={this.state.options.length > 0} 
+                    handlePick={this.handlePick}
+                />
+                <Options 
+                    options={this.state.options} 
+                    handleDeleteOptions={this.handleDeleteOptions}
+                />
                 <AddOption />
             </div>
         );
@@ -26,13 +51,13 @@ class Header extends React.Component {
 }
 
 class Action extends React.Component {
-    handlePick() {
-        console.log("here")
-    }
     render() {
         return (
             <div>
-                <button onClick={this.handlePick}>
+                <button 
+                    onClick={this.props.handlePick} 
+                    disabled={!this.props.hasOptions}
+                >
                     What Should I Do?
                 </button>
             </div>
@@ -41,13 +66,10 @@ class Action extends React.Component {
 }
 
 class Options extends React.Component {
-    removeAll() {
-        console.log("Remove")
-    }
     render() {
         return (
             <div>
-                <button onClick={this.removeAll}>Remove all</button>
+                <button onClick={this.props.handleDeleteOptions}>Remove all</button>
                 {
                     this.props.options.map((option) => <Option key={option} optionText={option}/>)
                 }
